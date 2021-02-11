@@ -1,5 +1,10 @@
 module MixedModelsExtras
 
-# Write your package code here.
+export icc
+
+
+using MixedModels
+
+include("icc.jl")
 
 end
