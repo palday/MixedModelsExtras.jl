@@ -1,6 +1,6 @@
 using MixedModelsExtras
 using Test
 
-@testset "MixedModelsExtras.jl" begin
-    # Write your tests here.
+@testset "ICC" begin
+    include("icc.jl")
 end
