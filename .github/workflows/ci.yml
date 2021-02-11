@@ -28,15 +28,28 @@ jobs:
         with:
           version: ${{ matrix.version }}
           arch: ${{ matrix.arch }}
+      - name: Cache
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-artifacts
+        with:
+          path: ~/.julia/artifacts
+          key: ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-test-${{ env.cache-name }}-
+            ${{ runner.os }}-test-
+            ${{ runner.os }}-
       - name: Build
         uses: julia-actions/julia-buildpkg@v1
       - name: Test
         uses: julia-actions/julia-runtest@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Coverage
+      - name: Coverage Process
         uses: julia-actions/julia-uploadcodecov@v0.1
         if:  ${{ startsWith(matrix.os, 'ubuntu') && (matrix.version == '1') }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Coverage Upload
+        uses: codecov/codecov-action@v1
+        if:  ${{ startsWith(matrix.os, 'ubuntu') && (matrix.version == '1') }}
+        with:
+          file: lcov.info
