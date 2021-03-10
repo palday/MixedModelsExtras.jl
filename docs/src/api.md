@@ -8,6 +8,17 @@ DocTestFilters = [r"([a-z]*) => \1", r"getfield\(.*##[0-9]+#[0-9]+"]
 
 # MixedModelsExtras.jl API
 
+## Coefficient of Determination
+
+```@docs
+r2
+```
+
+```@docs
+adjr2
+```
+
+
 ## Intra-Class Correlation Coefficient
 
 ```@docs
