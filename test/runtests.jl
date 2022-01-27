@@ -1,8 +1,13 @@
+using MixedModels
 using MixedModelsExtras
 using Test
 
 @testset "ICC" begin
     include("icc.jl")
+end
+
+@testset "influence" begin
+    include("influence.jl")
 end
 
 @testset "r2" begin
