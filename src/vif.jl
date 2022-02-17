@@ -36,5 +36,5 @@ function vif(m::MixedModel)
         throw(ArgumentError("VIF not meaningful for models with only one non-intercept term"))
     # directly computing inverses is bad, but
     # generally this shouldn't be a huge matrix and it's symmetric
-    return diag(inv(mm))
+    return diag(inv(Symmetric(mm)))
 end
