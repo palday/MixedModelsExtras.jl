@@ -23,9 +23,14 @@ end
 """
     vif(m::MixedModel)
 
-Compute the variance inflation factor (VIF) .
+Compute the variance inflation factor (VIF).
 
 See also [`vifnames`](@ref).
+
+!!! warning
+    This method will fail if there is (numerically) perfect multicollinearity,
+    i.e. rank deficiency (in the fixed effects). In that case though, the VIF
+    isn't particularly informative anyway.
 """
 function vif(m::MixedModel)
     mm = vcov(m; corr=true)
@@ -36,5 +41,7 @@ function vif(m::MixedModel)
         throw(ArgumentError("VIF not meaningful for models with only one non-intercept term"))
     # directly computing inverses is bad, but
     # generally this shouldn't be a huge matrix and it's symmetric
+    # NB: The coorrelation matrix is positive definite and hence invertible
+    #     unless there is perfect rank deficiency, hence the warning.
     return diag(inv(Symmetric(mm)))
 end
