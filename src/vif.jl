@@ -6,6 +6,8 @@
     vifnames(m::MixedModel)
 
 Show the names of the coefficients for which a VIF is computed.
+
+See also [`vif`](@ref).
 """
 function vifnames(m::MixedModel)
     cn = coefnames(m)
@@ -19,11 +21,11 @@ function vifnames(m::MixedModel)
 end
 
 """
-    vifnames(m::MixedModel)
+    vif(m::MixedModel)
 
-Compute the variance inflation factor (VIF).
+Compute the variance inflation factor (VIF) .
 
-See also [`vif`](@ref).
+See also [`vifnames`](@ref).
 """
 function vif(m::MixedModel)
     mm = vcov(m; corr=true)
