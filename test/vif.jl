@@ -7,9 +7,12 @@ using Test
 progress = false
 
 @testset "LMM" begin
-    fm0 = fit(MixedModel, @formula(reaction ~ 0 + days + (1|subj)), dataset(:sleepstudy); progress)
-    fm1 = fit(MixedModel, @formula(reaction ~ 1 + days + (1|subj)), dataset(:sleepstudy); progress)
-    fm2 = fit(MixedModel, @formula(reaction ~ 1 + days * days^2 + (1|subj)), dataset(:sleepstudy); progress)
+    fm0 = fit(MixedModel, @formula(reaction ~ 0 + days + (1 | subj)), dataset(:sleepstudy);
+              progress)
+    fm1 = fit(MixedModel, @formula(reaction ~ 1 + days + (1 | subj)), dataset(:sleepstudy);
+              progress)
+    fm2 = fit(MixedModel, @formula(reaction ~ 1 + days * days^2 + (1 | subj)),
+              dataset(:sleepstudy); progress)
 
     ae_int = ArgumentError("VIF only defined for models with an intercept term")
     ae_nterm = ArgumentError("VIF not meaningful for models with only one non-intercept term")
