@@ -1,4 +1,4 @@
-const SymbolCollection = Union{Symbol, Tuple{Symbol, Vararg{Symbol}}, AbstractVector{Symbol}}
+const SymbolCollection = Union{Symbol,Tuple{Symbol,Vararg{Symbol}},AbstractVector{Symbol}}
 
 function _group_var(vc::VarCorr, group::Symbol)
     return sum(abs2, getproperty(getproperty(vc.σρ, group), :σ))
@@ -36,10 +36,11 @@ all grouping variables are used.
     each group separately, then you must call `icc` separately for each group.
 """
 function icc(model::GeneralizedLinearMixedModel,
-             groups::Union{Symbol, SymbolCollection})
-    dispersion_parameter(model) && throw(ArgumentError("GLMMs with dispersion parameters are not currently supported."))
+             groups::Union{Symbol,SymbolCollection})
+    dispersion_parameter(model) &&
+        throw(ArgumentError("GLMMs with dispersion parameters are not currently supported."))
 
-    if model.resp.d isa Union{Binomial, Bernoulli}
+    if model.resp.d isa Union{Binomial,Bernoulli}
         σ²res = π^2 / 3
     elseif model.resp.d isa Poisson
         σ²res = 1.0
@@ -50,13 +51,15 @@ function icc(model::GeneralizedLinearMixedModel,
     return _icc(VarCorr(model), groups, σ²res)
 end
 
-icc(model::LinearMixedModel,
-    groups::Union{Symbol, SymbolCollection}) = _icc(VarCorr(model), groups, varest(model))
+function icc(model::LinearMixedModel,
+             groups::Union{Symbol,SymbolCollection})
+    return _icc(VarCorr(model), groups, varest(model))
+end
 
 icc(model::MixedModel) = icc(model, fnames(model))
 
-function _icc(vc::VarCorr, groups::Union{Symbol, SymbolCollection}, σ²res)
-    σ²_α  = _group_var(vc, groups) # random effect(s) in numerator
+function _icc(vc::VarCorr, groups::Union{Symbol,SymbolCollection}, σ²res)
+    σ²_α = _group_var(vc, groups) # random effect(s) in numerator
     σ² = σ²res + _group_var(vc)
     return σ²_α / σ²
 end
