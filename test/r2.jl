@@ -10,8 +10,11 @@ function _adjust(r2, model)
     return 1 - (1 - r2) * (n - 1) / (n - p)
 end
 
+progress = false
+
 @testset "LMM" begin
-    model = fit(MixedModel, @formula(reaction ~ 1 + (1|subj)), dataset(:sleepstudy))
+    model = fit(MixedModel, @formula(reaction ~ 1 + (1|subj)),
+                dataset(:sleepstudy); progress)
 
     @test r2(model;conditional=true) ≈ cor(response(model), fitted(model))^2
     @test r2(model;conditional=false) ≈ cor(response(model), model.X * model.β)^2
