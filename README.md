@@ -3,7 +3,7 @@
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Stable Docs][docs-stable-img]][docs-stable-url]
 [![Dev Docs][docs-dev-img]][docs-dev-url]
-[![Codecov](https://codecov.io/gh/palday/MixedModelsExtras.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/palday/MixedModelsExtras.jl)
+[![Codecov](https://codecov.io/gh/palday/MixedModelsExtras.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/palday/MixedModelsExtras.jl)
 [![DOI](https://zenodo.org/badge/337082120.svg)](https://zenodo.org/badge/latestdoi/337082120)
 
 [docs-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
