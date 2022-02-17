@@ -1,3 +1,4 @@
+using LinearAlgebra
 using MixedModels
 using MixedModels: dataset
 using MixedModelsExtras
