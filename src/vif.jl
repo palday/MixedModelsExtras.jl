@@ -43,8 +43,6 @@ function vif(m::RegressionModel)
     mm = @view mm[2:end, 2:end]
     size(mm, 2) > 1 ||
         throw(ArgumentError("VIF not meaningful for models with only one non-intercept term"))
-    # directly computing inverses is bad, but
-    # generally this shouldn't be a huge matrix and it's symmetric
     # NB: The correlation matrix is positive definite and hence invertible
     #     unless there is perfect rank deficiency, hence the warning.
     # NB: The determinate technique for GVIF could also be applied
@@ -54,7 +52,60 @@ function vif(m::RegressionModel)
     #     how you could show equivalency, if you remember that inversion is solving
     #     a linear system and that Cramer's rule -- which uses determinants --
     #     can also a linear system
-    return diag(inv(Symmetric(mm)))
+    # so we want diag(inv(mm)) but directly computing inverses is bad.
+    # well we can also take advantage that inv(mm) == (mm') ./ det(mm)
+    # and since this matric is symmetric and we only care about the diagonal
+    # we can rewrite that as:
+    return diag(mm) ./ det(mm)
+    # benchmarks for different ways:
+    # julia> @benchmark vif($(lm1)) # diag(inv(mm))
+    # BenchmarkTools.Trial: 10000 samples with 10 evaluations.
+    # Range (min … max):  1.120 μs … 924.783 μs  ┊ GC (min … max): 0.00% … 99.61%
+    # Time  (median):     1.252 μs               ┊ GC (median):    0.00%
+    # Time  (mean ± σ):   1.382 μs ±   9.238 μs  ┊ GC (mean ± σ):  6.67% ±  1.00%
+
+    #         █▇▃
+    # ▃█▇▄▂▂▂████▆▄▄▆▆▆▄▄▃▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁ ▂
+    # 1.12 μs         Histogram: frequency by time        1.91 μs <
+
+    # Memory estimate: 1.20 KiB, allocs estimate: 13.
+
+    # julia> @benchmark vif($(lm1)) # diag(inv(Symmetric(mm)))
+    # BenchmarkTools.Trial: 10000 samples with 10 evaluations.
+    # Range (min … max):  1.173 μs …  1.014 ms  ┊ GC (min … max): 0.00% … 99.56%
+    # Time  (median):     1.310 μs              ┊ GC (median):    0.00%
+    # Time  (mean ± σ):   1.463 μs ± 10.132 μs  ┊ GC (mean ± σ):  6.90% ±  1.00%
+
+    # ▄  ▇█
+    # ▆█▄▂███▆▇▆▄▃▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁ ▂
+    # 1.17 μs        Histogram: frequency by time        2.63 μs <
+
+    # Memory estimate: 1.30 KiB, allocs estimate: 15.
+
+    # julia> @benchmark vif($(lm1)) # diag(mm) ./ det(mm)
+    # BenchmarkTools.Trial: 10000 samples with 10 evaluations.
+    # Range (min … max):  1.107 μs … 934.525 μs  ┊ GC (min … max): 0.00% … 99.63%
+    # Time  (median):     1.245 μs               ┊ GC (median):    0.00%
+    # Time  (mean ± σ):   1.364 μs ±   9.337 μs  ┊ GC (mean ± σ):  6.82% ±  1.00%
+
+    #             ▄█▆▃
+    # ▂▅▆▅▃▂▂▂▂▅█████▆▄▄▅▆▆▆▅▄▃▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁ ▂
+    # 1.11 μs         Histogram: frequency by time        1.72 μs <
+
+    # Memory estimate: 1.14 KiB, allocs estimate: 12.
+
+    # julia> @benchmark vif($(lm1))  diag(mm) ./ det(Symmetric(mm))
+    # BenchmarkTools.Trial: 10000 samples with 10 evaluations.
+    # Range (min … max):  1.162 μs …  1.010 ms  ┊ GC (min … max): 0.00% … 99.58%
+    # Time  (median):     1.301 μs              ┊ GC (median):    0.00%
+    # Time  (mean ± σ):   1.434 μs ± 10.089 μs  ┊ GC (mean ± σ):  7.01% ±  1.00%
+
+    # ▁▂     ▅█▅▁
+    # ▂██▆▃▂▂▄████▆▄▅▇▆▅▄▃▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁ ▂
+    # 1.16 μs        Histogram: frequency by time        1.95 μs <
+
+    # Memory estimate: 1.28 KiB, allocs estimate: 14.
+
 end
 
 """
@@ -103,14 +154,16 @@ function gvif(m::RegressionModel; scale=false)
 
     df = width.(trms)
     vals = zeros(eltype(mm), length(tn))
+    # benchmarking shows thad adding in Symmetric() here before det()
+    # actually slows things down a bit
     detmm = det(mm)
     acc = 0
     for idx in axes(vals, 1)
         wt = df[idx]
         trm_only = [acc < i <= (acc + wt) for i in axes(mm, 2)]
         trm_excl = .!trm_only
-        vals[idx] = det(Symmetric(view(mm, trm_only, trm_only))) *
-                    det(Symmetric(view(mm, trm_excl, trm_excl))) /
+        vals[idx] = det(view(mm, trm_only, trm_only)) *
+                    det(view(mm, trm_excl, trm_excl)) /
                     detmm
         acc += wt
     end
