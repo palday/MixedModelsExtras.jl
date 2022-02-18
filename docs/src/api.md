@@ -24,3 +24,17 @@ adjr2
 ```@docs
 icc
 ```
+
+## Variance Inflation Factor
+
+```@docs
+vif
+```
+
+```@docs
+termnames
+```
+
+```@docs
+gvif
+```
