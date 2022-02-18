@@ -27,7 +27,7 @@ In other words, the corresponding coefficients are `coefnames(m)[2:end]`.
 
 The [variance inflation factor (VIF)](https://en.wikipedia.org/wiki/Variance_inflation_factor) measures
 the increase in the variance of a parameter's estimate in a model with multiple parameters relative to
-the variance in of a paremeter's estimate in a model containing only that parameter.
+the variance of a parameter's estimate in a model containing only that parameter.
 
 See also [`coefnames`](@ref), [`gvif`](@ref).
 
