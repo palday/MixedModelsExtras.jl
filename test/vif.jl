@@ -2,11 +2,11 @@ using GLM
 using LinearAlgebra
 using MixedModels
 using MixedModelsExtras
+using StatsBase
 using Test
 
 using MixedModels: dataset
-using RDatasets: RDatasets
-rdataset = RDatasets.dataset
+using RDatasets: dataset as rdataset
 
 progress = false
 
@@ -38,14 +38,15 @@ progress = false
     @test isapprox(vif(fm2), gvif(fm2))
     # the scale factor is gvif^1/(2df)
     # so just sqrt.(vif) when everything is continuous
-    @test isapprox(gvif(fm2; scaled_by_df=true),
+    @test isapprox(gvif(fm2; scale=true),
                    sqrt.(gvif(fm2)))
 end
 
-@testset "GVIF and RegressionModel" begin
+@testset "GVIF and RegrssionModel" begin
     duncan = rdataset("car", "Duncan")
 
     lm1 = lm(@formula(Prestige ~ 1 + Income + Education), duncan)
+    @test termnames(lm1) == coefnames(lm1)
     vif_lm1 = vif(lm1)
 
     # values here taken from car
@@ -53,7 +54,10 @@ end
     @test isapprox(vif_lm1, gvif(lm1))
 
     lm2 = lm(@formula(Prestige ~ 1 + Income + Education + Type), duncan)
+    @test termnames(lm2) ==  ["(Intercept)", "Income", "Education", "Type"]
     @test isapprox(gvif(lm2), [2.209178, 5.297584, 5.098592]; atol=1e-5)
-    @test isapprox(gvif(lm2; scaled_by_df=true),
+    @test isapprox(gvif(lm2; scale=true),
                    [1.486330, 2.301648, 1.502666]; atol=1e-5)
+
+
 end

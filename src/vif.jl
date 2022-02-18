@@ -11,10 +11,10 @@ For models with categorical predictors, the returned names reflect
 the categorical predictor and not the coefficients resulting from
 the choice of contrast coding.
 """
-termnames(model) = collect(_rename_intercept.(string.(_terms(model))))
+termnames(model) = _rename_intercept.(string.(_terms(model)))
 
-_terms(model) = formula(model).rhs.terms
-_terms(model::MixedModel) = formula(model).rhs[1].terms
+_terms(model) = collect(formula(model).rhs.terms)
+_terms(model::MixedModel) = collect(formula(model).rhs[1].terms)
 
 """
     vif(m::RegressionModel)
@@ -58,11 +58,11 @@ function vif(m::RegressionModel)
 end
 
 """
-    gvif(m::RegressionModel; scaled_by_df=false)
+    gvif(m::RegressionModel; scale=false)
 
 Compute the generalized variance inflation factor (GVIF).
 
-If `scale_by_df=true`, then each GVIF is scaled by the degrees of freedom
+If `scale=true`, then each GVIF is scaled by the degrees of freedom
 for (number of coefficients associated with) the predictor: ``GVIF^(1 / (2*df))``
 
 Returns a vector of inflation factors computed for each term except
@@ -89,7 +89,7 @@ See also [`termnames`](@ref), [`vif`](@ref).
 Fox, J., & Monette, G. (1992). Generalized Collinearity Diagnostics.
 Journal of the American Statistical Association, 87(417), 178. doi:10.2307/2290467
 """
-function gvif(m::RegressionModel; scaled_by_df=false)
+function gvif(m::RegressionModel; scale=false)
     mm = StatsBase.cov2cor!(vcov(m), stderror(m))
 
     all(==(1), view(modelmatrix(m), :, 1)) ||
@@ -115,7 +115,7 @@ function gvif(m::RegressionModel; scaled_by_df=false)
         acc += wt
     end
 
-    if scaled_by_df
+    if scale
         vals .= vals .^ (1 ./ (2 .* df))
     end
     return vals
