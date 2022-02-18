@@ -17,12 +17,8 @@ progress = false
     ae_int = ArgumentError("VIF only defined for models with an intercept term")
     ae_nterm = ArgumentError("VIF not meaningful for models with only one non-intercept term")
     @test_throws ae_int vif(fm0)
-    @test_throws ae_int vifnames(fm0)
-
     @test_throws ae_nterm vif(fm1)
-    @test_throws ae_nterm vifnames(fm1)
 
-    @test vifnames(fm2) == coefnames(fm2)[2:end]
     mm = @view cor(modelmatrix(fm2))[2:end, 2:end]
     # this is a slightly different way to do the same
     # computation. I've verified that doing it this way
@@ -32,4 +28,9 @@ progress = false
     # but that model is a slightly different fit than the Julia
     # one and that has knock-on effects
     @test isapprox(vif(fm2), diag(inv(mm)))
+
+    # since these are all continuous preds, should be the same
+    @test isapprox(vif(fm2), gvif(fm2))
+    @test isapprox(gvif(fm2; scaled_by_df=true),
+                   gvif(fm2) .^ 0.5)
 end
