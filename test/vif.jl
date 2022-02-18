@@ -30,7 +30,10 @@ progress = false
     @test isapprox(vif(fm2), diag(inv(mm)))
 
     # since these are all continuous preds, should be the same
+    # but uses a very different computational method!
     @test isapprox(vif(fm2), gvif(fm2))
+    # the scale factor is gvif^1/(2df)
+    # so just sqrt.(vif) when everything is continuous
     @test isapprox(gvif(fm2; scaled_by_df=true),
-                   gvif(fm2) .^ 0.5)
+                   sqrt.(gvif(fm2)))
 end
