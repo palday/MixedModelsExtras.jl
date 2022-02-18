@@ -53,8 +53,8 @@ function vif(m::RegressionModel)
     #     a linear system and that Cramer's rule -- which uses determinants --
     #     can also a linear system
     # so we want diag(inv(mm)) but directly computing inverses is bad.
-    # well we can also take advantage that inv(mm) == (mm') ./ det(mm)
-    # and since this matric is symmetric and we only care about the diagonal
+    # well we can also take advantage of the fact that inv(mm) == (mm') ./ det(mm)
+    # and since this matrix is symmetric and we only care about the diagonal
     # we can rewrite that as:
     return diag(mm) ./ det(mm)
     # benchmarks for different ways:
