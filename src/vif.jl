@@ -37,7 +37,7 @@ See also [`coefnames`](@ref), [`gvif`](@ref).
     isn't particularly informative anyway.
 """
 function vif(m::RegressionModel)
-    mm = StatsBase.cov2cor!(vcov(m), stderror(m))
+    mm = Statistics.cov2cor!(vcov(m), stderror(m))
     all(==(1), view(modelmatrix(m), :, 1)) ||
         throw(ArgumentError("VIF only defined for models with an intercept term"))
     mm = @view mm[2:end, 2:end]
