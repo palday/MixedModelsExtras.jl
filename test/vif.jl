@@ -54,10 +54,8 @@ end
     @test isapprox(vif_lm1, gvif(lm1))
 
     lm2 = lm(@formula(Prestige ~ 1 + Income + Education + Type), duncan)
-    @test termnames(lm2) ==  ["(Intercept)", "Income", "Education", "Type"]
+    @test termnames(lm2) == ["(Intercept)", "Income", "Education", "Type"]
     @test isapprox(gvif(lm2), [2.209178, 5.297584, 5.098592]; atol=1e-5)
     @test isapprox(gvif(lm2; scale=true),
                    [1.486330, 2.301648, 1.502666]; atol=1e-5)
-
-
 end
