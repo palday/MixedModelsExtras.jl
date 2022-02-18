@@ -11,13 +11,10 @@ For models with categorical predictors, the returned names reflect
 the categorical predictor and not the coefficients resulting from
 the choice of contrast coding.
 """
-termnames(model) = collect(_rename_intercept.(string.(formula(model).rhs.terms)))
-function termnames(model::MixedModel)
-    return collect(_rename_intercept.(string.(formula(model).rhs[1].terms)))
-end
+termnames(model) = collect(_rename_intercept.(string.(_terms(model))))
 
-_terms(model) = collect(formula(model).rhs.terms)
-_terms(model::MixedModel) = collect(formula(model).rhs[1].terms)
+_terms(model) = formula(model).rhs.terms
+_terms(model::MixedModel) = formula(model).rhs[1].terms
 
 """
     vif(m::RegressionModel)
@@ -73,14 +70,14 @@ for the intercept.
 In other words, the corresponding coefficients are `termnames(m)[2:end]`.
 
 The [generalized variance inflation factor (VIF)](https://doi.org/10.2307/2290467)
-measuresthe increase in the variance of a (group of) parameter's estimate in a model
-with multiple parameters relative to the variance in of a paremeter's estimate in a
+measures the increase in the variance of a (group of) parameter's estimate in a model
+with multiple parameters relative to the variance of a parameter's estimate in a
 model containing only that parameter. For continuous, numerical predictors, the GVIF
-is the same as the VIF, but for categorical predictors, the GVIF provides a singule
+is the same as the VIF, but for categorical predictors, the GVIF provides a single
 number for the entire group of contrast-coded coefficients associated with a categorical
 predictor.
 
-See also [`termnames`](@ref), [`vif`](@ref)..
+See also [`termnames`](@ref), [`vif`](@ref).
 
 !!! warning
     This method will fail if there is (numerically) perfect multicollinearity,
@@ -118,5 +115,8 @@ function gvif(m::RegressionModel; scaled_by_df=false)
         acc += wt
     end
 
-    return scaled_by_df ? vals .^ (1 ./ (2 .* df)) : vals
+    if scaled_by_df
+        vals .= vals .^ (1 ./ (2 .* df))
+    end
+    return vals
 end
