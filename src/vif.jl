@@ -92,7 +92,7 @@ Journal of the American Statistical Association, 87(417), 178. doi:10.2307/22904
 function gvif(m::RegressionModel; scale=false)
     mm = StatsBase.cov2cor!(vcov(m), stderror(m))
 
-    all(==(1), view(modelmatrix(m), :, 1)) ||
+    StatsModels.hasintercept(formula(m)) ||
         throw(ArgumentError("GVIF only defined for models with an intercept term"))
     mm = @view mm[2:end, 2:end]
     size(mm, 2) > 1 ||
