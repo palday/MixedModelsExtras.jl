@@ -1,10 +1,13 @@
+using GLM
 using LinearAlgebra
 using MixedModels
-using MixedModels: dataset
 using MixedModelsExtras
+using RDatasets
 using Test
 
+using MixedModels: dataset
 progress = false
+rdataset = RDatasets.dataset
 
 @testset "LMM" begin
     fm0 = fit(MixedModel, @formula(reaction ~ 0 + days + (1 | subj)), dataset(:sleepstudy);
@@ -36,4 +39,20 @@ progress = false
     # so just sqrt.(vif) when everything is continuous
     @test isapprox(gvif(fm2; scaled_by_df=true),
                    sqrt.(gvif(fm2)))
+end
+
+@testset "GVIF and RegressionModel" begin
+    duncan = rdataset("car", "Duncan")
+
+    lm1 = lm(@formula(Prestige ~ 1 + Income + Education), duncan)
+    vif_lm1 = vif(lm1)
+
+    # values here taken from car
+    @test isapprox(vif_lm1, [2.1049, 2.1049]; atol=1e-5)
+    @test isapprox(vif_lm1, gvif(lm1))
+
+    lm2 = lm(@formula(Prestige ~ 1 + Income + Education + Type), duncan)
+    @test isapprox(gvif(lm2), [2.209178, 5.297584, 5.098592]; atol=1e-5)
+    @test isapprox(gvif(lm2; scaled_by_df=true),
+                   [1.486330, 2.301648, 1.502666]; atol=1e-5)
 end
