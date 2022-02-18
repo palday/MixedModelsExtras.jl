@@ -16,7 +16,9 @@ the categorical predictor and not the coefficients resulting from
 the choice of contrast coding.
 """
 termnames(model) = collect(_rename_intercept.(string.(formula(model).rhs.terms)))
-termnames(model::MixedModel) = collect(_rename_intercept.(string.(formula(model).rhs[1].terms)))
+function termnames(model::MixedModel)
+    return collect(_rename_intercept.(string.(formula(model).rhs[1].terms)))
+end
 
 _terms(model) = collect(formula(model).rhs.terms)
 _terms(model::MixedModel) = collect(formula(model).rhs[1].terms)
@@ -50,7 +52,6 @@ function vif(m::RegressionModel)
     #     unless there is perfect rank deficiency, hence the warning.
     return diag(inv(Symmetric(mm)))
 end
-
 
 """
     gvif(m::RegressionModel; scaled_by_df=false)
@@ -91,7 +92,8 @@ function gvif(m::RegressionModel; scaled_by_df=false)
         wt = df[idx]
         trm_only = [acc < i <= (acc + wt) for i in 1:length(trms)]
         trm_excl = .!trm_only
-        vals[idx] = det(view(mm, trm_only, trm_only)) * det(view(mm, trm_excl, trm_excl)) / detmm
+        vals[idx] = det(view(mm, trm_only, trm_only)) * det(view(mm, trm_excl, trm_excl)) /
+                    detmm
         acc += wt
     end
 
