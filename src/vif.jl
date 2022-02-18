@@ -92,7 +92,8 @@ function gvif(m::RegressionModel; scaled_by_df=false)
         wt = df[idx]
         trm_only = [acc < i <= (acc + wt) for i in axes(mm, 2)]
         trm_excl = .!trm_only
-        vals[idx] = det(Symmetric(view(mm, trm_only, trm_only))) * det(Symmetric(view(mm, trm_excl, trm_excl))) /
+        vals[idx] = det(Symmetric(view(mm, trm_only, trm_only))) *
+                    det(Symmetric(view(mm, trm_excl, trm_excl))) /
                     detmm
         acc += wt
     end
