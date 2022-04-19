@@ -15,8 +15,8 @@ progress = false
     @test icc(model, :subj) ≈ 0.37918288
 
     formula = @formula(rt_trunc ~ 1 + spkr * prec * load +
-                                (1 + spkr | subj) +
-                                (1 | item))
+                                  (1 + spkr | subj) +
+                                  (1 | item))
     model = fit(MixedModel, formula, dataset(:kb07); progress)
     @test icc(model, :subj) + icc(model, :item) ≈ icc(model)
 
