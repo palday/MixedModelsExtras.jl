@@ -80,7 +80,9 @@ end
 
 _residual_variance(::Union{Binomial,Bernoulli}) = π^2 / 3
 _residual_variance(::Poisson) = 1.0
-_residual_variance(::Any) = throw(ArgumentError("Family $(typeof(d)) currently unsupported, please file an issue."))
+function _residual_variance(::Any)
+    throw(ArgumentError("Family $(typeof(d)) currently unsupported, please file an issue."))
+end
 
 function icc(model::LinearMixedModel,
              groups::Union{Symbol,SymbolCollection})
@@ -102,19 +104,17 @@ icc(boot::MixedModelBootstrap) = icc(boot, propertynames(boot.fcnames))
 icc(boot::MixedModelBootstrap, family) = icc(boot, family, propertynames(boot.fcnames))
 
 function icc(boot::MixedModelBootstrap,
-            groups::Union{Symbol,SymbolCollection})
+             groups::Union{Symbol,SymbolCollection})
     any(ismissing, boot.σ) &&
         throw(ArgumentError("Bootstrapping GLMM requires specifying the family."))
     return _icc(boot.σs, groups, abs2.(boot.σ))
 end
-
 
 function icc(boot::MixedModelBootstrap, family,
              groups::Union{Symbol,SymbolCollection})
     σ²res = _residual_variance(family)
     return _icc(boot.σs, groups, σ²res)
 end
-
 
 function _icc(tbl, groups::Union{Symbol,SymbolCollection}, σ²res)
     σ²_α = _group_var(tbl, groups) # random effect(s) in numerator
