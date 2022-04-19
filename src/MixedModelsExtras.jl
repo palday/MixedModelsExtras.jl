@@ -9,6 +9,7 @@ using MixedModels
 using Statistics
 using StatsBase
 using StatsModels
+using Tables
 
 include("icc.jl")
 include("r2.jl")

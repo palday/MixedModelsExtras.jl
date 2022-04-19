@@ -2,6 +2,7 @@ using DataFrames
 using MixedModels
 using MixedModels: dataset
 using MixedModelsExtras
+using StableRNGs
 using Statistics
 using Test
 
@@ -13,6 +14,23 @@ progress = false
     @test icc(model, :subj) == icc(model, [:subj]) == icc(model)
     @test icc(model, :subj) ≈ 0.37918288
 
+    formula = @formula(rt_trunc ~ 1 + spkr * prec * load +
+                                (1 + spkr | subj) +
+                                (1 | item))
+    model = fit(MixedModel, formula, dataset(:kb07); progress)
+    @test icc(model, :subj) + icc(model, :item) ≈ icc(model)
+
+    @testset "bootstrap" begin
+        boot = parametricbootstrap(StableRNG(42), 100, model; hide_progress=!progress)
+        iccboot_subj = icc(boot, :subj)
+        iccboot_item = icc(boot, :item)
+        @test iccboot_subj + iccboot_item ≈ icc(boot)
+
+        ci_subj = shortestcovint(iccboot_subj)
+        ci_item = shortestcovint(iccboot_item)
+        @test first(ci_subj) < icc(model, :subj) < last(ci_subj)
+        @test first(ci_item) < icc(model, :item) < last(ci_item)
+    end
 end
 
 @testset "Binomial" begin
@@ -32,6 +50,15 @@ end
                    contra, Binomial(); fast=true, wts=ones(length(contra.dist)), progress)
     # Bernoullis are a special case of binomial, so make sure they give the same answer
     @test icc(modelbern, Symbol("urban & dist")) ≈ icc(modelbin, Symbol("urban & dist"))
+
+    @testset "bootstrap" begin
+        boot = parametricbootstrap(StableRNG(42), 100, modelbern; hide_progress=!progress)
+        @test_throws ArgumentError icc(boot)
+        iccboot = icc(boot, Bernoulli())
+        ci = shortestcovint(iccboot)
+        @test first(ci) < icc(modelbern) < last(ci)
+        @test iccboot ≈ icc(boot, Bernoulli(), Symbol("urban & dist"))
+    end
 end
 
 @testset "Poisson" begin
