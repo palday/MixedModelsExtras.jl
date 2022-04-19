@@ -11,7 +11,8 @@ progress = false
     model = fit(MixedModel, @formula(reaction ~ 1 + (1 | subj)), dataset(:sleepstudy);
                 progress)
     @test icc(model, :subj) == icc(model, [:subj]) == icc(model)
-    @test icc(model, :subj) ≈ 0.37918288298942798287
+    @test icc(model, :subj) ≈ 0.37918288
+
 end
 
 @testset "Binomial" begin
