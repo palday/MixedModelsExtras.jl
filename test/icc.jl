@@ -1,4 +1,5 @@
 using DataFrames
+using Distributions
 using MixedModels
 using MixedModels: dataset
 using MixedModelsExtras
@@ -71,4 +72,9 @@ end
     @test icc(model, [:index, :brood]) ≈ 0.3878770599741494518 atol = 0.0005
     @test icc(model, [:index, :brood, :location]) ≈ 0.53293244949745322003 atol = 0.0005
     @test icc(model, [:index, :brood, :location]) == icc(model)
+end
+
+@testset "Fallback" begin
+   @test_throws(ArgumentError("Family TDist{Float64} currently unsupported, please file an issue."),
+                MixedModelsExtras._residual_variance(TDist(3)))
 end
