@@ -44,8 +44,8 @@ function partial_fitted(model::LinearMixedModel{T},
                         fe::AbstractVector{<:AbstractString},
                         re::Dict{Symbol}=Dict(fn => fe for fn in fnames(model));
                         mode=:include) where {T}
-    @debug fe
-    @debug re
+    # @debug fe
+    # @debug re
     issubset(fe, coefnames(model)) ||
         throw(ArgumentError("specified FE names not subset of $(coefnames(model))"))
 
@@ -56,17 +56,17 @@ function partial_fitted(model::LinearMixedModel{T},
     else
         BitVector(c in fe for c in fixefnames(model))
     end
-    @debug fe_idx
+    # @debug fe_idx
     mode == :exclude && (fe_idx = .!fe_idx)
-    @debug fe_idx
+    # @debug fe_idx
     # XXX does this work properly for rank-deficient models?
     X = view(model.X, :, fe_idx)
     vv = mul!(Vector{T}(undef, nobs(model)), X, fixef(model)[fe_idx])
 
     for (rt, bb) in zip(model.reterms, ranef(model))
         group = Symbol(string(rt.trm))
-        @debug group
-        @debug group in keys(re)
+        # @debug group
+        # @debug group in keys(re)
         !isnothing(get(re, group, nothing)) || mode == :exclude || continue
         issubset(re[group], rt.cnames) ||
             throw(ArgumentError("specified RE names for $(group) not subset of $(rt.cnames)"))
@@ -76,13 +76,13 @@ function partial_fitted(model::LinearMixedModel{T},
             BitVector(c in re[group] for c in rt.cnames)
         end
         mode == :exclude && (re_idx = .!re_idx)
-        @debug re_idx
+        # @debug re_idx
         # nothing to do
         all(==(0), re_idx) && continue
-        @debug "not skipped"
+        # @debug "not skipped"
 
         re_idx_reps = reduce(vcat, (re_idx for i in eachindex(rt.levels)))
-        @debug re_idx_reps
+        # @debug re_idx_reps
         # XXX no appropriate mul! method
         # mul!(vv, view(rt, :, re_idx_reps), view(bb, re_idx, :), one(T), one(T))
         # should re-write this as a loop to avoid allocating the intermediate allocation
