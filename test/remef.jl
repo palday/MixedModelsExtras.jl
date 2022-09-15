@@ -16,7 +16,7 @@ fm1 = fit(MixedModel,
 
 @test_throws(ArgumentError("""specified FE names not subset of ["(Intercept)", "days"]"""),
              partial_fitted(fm1, ["(Intercept)", "Days"], Dict(:subj => []); mode=:include))
-@test_throws(ArgumentError("""ArgumentError: specified RE names for subj not subset of ["(Intercept)", "days"]"""),
+@test_throws(ArgumentError("""specified RE names for subj not subset of ["(Intercept)", "days"]"""),
              partial_fitted(fm1, ["(Intercept)", "days"], Dict(:subj => ["Days"]); mode=:include))
 
 re_only_pf = partial_fitted(fm1, String[], Dict(:subj => String["(Intercept)", "days"]); mode=:include)
