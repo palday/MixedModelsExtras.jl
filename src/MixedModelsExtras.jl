@@ -1,9 +1,5 @@
 module MixedModelsExtras
 
-export icc
-export r², r2, adjr², adjr2
-export termnames, gvif, vif
-
 using LinearAlgebra
 using MixedModels
 using Statistics
@@ -12,7 +8,15 @@ using StatsModels
 using Tables
 
 include("icc.jl")
+export icc
+
 include("r2.jl")
+export r², r2, adjr², adjr2
+
 include("vif.jl")
+export termnames, gvif, vif
+
+include("remef.jl")
+export partial_fitted
 
 end
