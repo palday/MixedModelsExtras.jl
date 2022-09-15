@@ -75,6 +75,6 @@ end
 end
 
 @testset "Fallback" begin
-   @test_throws(ArgumentError("Family TDist{Float64} currently unsupported, please file an issue."),
-                MixedModelsExtras._residual_variance(TDist(3)))
+    @test_throws(ArgumentError("Family TDist{Float64} currently unsupported, please file an issue."),
+                 MixedModelsExtras._residual_variance(TDist(3)))
 end
