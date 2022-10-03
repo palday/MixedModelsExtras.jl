@@ -12,3 +12,7 @@ end
 @testset "VIF" begin
     include("vif.jl")
 end
+
+@testset "remef" begin
+    include("remef.jl")
+end

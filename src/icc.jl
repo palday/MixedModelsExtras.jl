@@ -80,7 +80,7 @@ end
 
 _residual_variance(::Union{Binomial,Bernoulli}) = π^2 / 3
 _residual_variance(::Poisson) = 1.0
-function _residual_variance(::Any)
+function _residual_variance(d::Any)
     throw(ArgumentError("Family $(typeof(d)) currently unsupported, please file an issue."))
 end
 

@@ -38,3 +38,9 @@ termnames
 ```@docs
 gvif
 ```
+
+## "Partial" Effects
+
+```@docs
+partial_fitted
+```
