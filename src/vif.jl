@@ -105,15 +105,15 @@ function gvif(m::RegressionModel; scale=false)
     vals = zeros(eltype(mm), length(tn))
     # benchmarking shows thad adding in Symmetric() here before det()
     # actually slows things down a bit
-    detmm = det(mm)
+    logdetmm = logdet(mm)
     acc = 0
     for idx in axes(vals, 1)
         wt = df[idx]
         trm_only = [acc < i <= (acc + wt) for i in axes(mm, 2)]
         trm_excl = .!trm_only
-        vals[idx] = det(view(mm, trm_only, trm_only)) *
-                    det(view(mm, trm_excl, trm_excl)) /
-                    detmm
+        vals[idx] = exp(logdet(view(mm, trm_only, trm_only)) +
+                        logdet(view(mm, trm_excl, trm_excl)) -
+                        logdetmm)
         acc += wt
     end
 
