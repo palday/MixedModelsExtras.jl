@@ -13,7 +13,9 @@ end
 progress = false
 
 @testset "LMM" begin
-    model = fit(MixedModel, @formula(reaction ~ 1 + (1 | subj)),
+    # can't use intercept-only FE because this leads to
+    # a constant response in the conditional=false case and a NaN correlation
+    model = fit(MixedModel, @formula(reaction ~ 1 + days + (1 | subj)),
                 dataset(:sleepstudy); progress)
 
     @test r2(model; conditional=true) ≈ cor(response(model), fitted(model))^2
