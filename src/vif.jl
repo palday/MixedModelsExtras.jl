@@ -103,8 +103,27 @@ function gvif(m::RegressionModel; scale=false)
 
     df = width.(trms)
     vals = zeros(eltype(mm), length(tn))
-    # benchmarking shows thad adding in Symmetric() here before det()
-    # actually slows things down a bit
+    # julia> @benchmark gvif($fm2) # logdet(mm)
+    # BenchmarkTools.Trial: 10000 samples with 1 evaluation.
+    #  Range (min … max):  28.776 μs …  12.991 ms  ┊ GC (min … max): 0.00% … 99.34%
+    #  Time  (median):     32.320 μs               ┊ GC (median):    0.00%
+    #  Time  (mean ± σ):   33.939 μs ± 129.624 μs  ┊ GC (mean ± σ):  3.80% ±  0.99%
+
+    #      ▂▆▇▇▃▂▄▇█▆▅▄▂▁
+    #   ▂▃▆██████████████▇▆▅▄▄▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▂▂▂▂▂▂▂▂▂▂ ▄
+    #   28.8 μs         Histogram: frequency by time         48.3 μs <
+    #  Memory estimate: 16.19 KiB, allocs estimate: 303.
+    # julia> @benchmark gvif($fm2) #  logdet(cholesky(Symmetric(mm)))
+    # BenchmarkTools.Trial: 10000 samples with 1 evaluation.
+    #  Range (min … max):  30.091 μs …  13.029 ms  ┊ GC (min … max): 0.00% … 99.31%
+    #  Time  (median):     33.279 μs               ┊ GC (median):    0.00%
+    #  Time  (mean ± σ):   35.016 μs ± 129.993 μs  ┊ GC (mean ± σ):  3.70% ±  0.99%
+
+    #      ▆█▆▄▃▆▇▆▆▄▄▁
+    #   ▂▃▇█████████████▆▅▄▄▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▂▂▁▂▂▂▂▂▂▂▁▂▂▂▂▂ ▄
+    #   30.1 μs         Histogram: frequency by time         50.1 μs <
+
+    #  Memory estimate: 16.22 KiB, allocs estimate: 304.
     logdetmm = logdet(mm)
     acc = 0
     for idx in axes(vals, 1)
