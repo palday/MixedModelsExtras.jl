@@ -1,5 +1,11 @@
+using Aqua
 using MixedModelsExtras
 using Test
+
+@testset "Aqua" begin
+    # it's not piracy for StatsAPI.r2(::MixedModel), it's privateering!
+    Aqua.test_all(MixedModelsExtras; ambiguities=false, piracy=false)
+end
 
 @testset "ICC" begin
     include("icc.jl")
