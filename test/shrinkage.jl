@@ -9,10 +9,10 @@ progress = false
 
 @testset "LMM" begin
     m1 = fit(MixedModel,
-            @formula(rt_trunc ~ 1 + spkr * prec * load +
-                                (1 + spkr + prec + load | subj) +
-                                (1 + spkr | item)),
-            dataset(:kb07); progress)
+             @formula(rt_trunc ~ 1 + spkr * prec * load +
+                                 (1 + spkr + prec + load | subj) +
+                                 (1 + spkr | item)),
+             dataset(:kb07); progress)
 
     st = shrinkagetables(m1)
     for p in 1:3, grp in propertynames(st)
