@@ -15,8 +15,10 @@ m1 = fit(MixedModel,
 
 st = shrinkagetables(m1)
 for p in 1:3, grp in [:subj, :item]
-    sn = DataFrame(shrinkagenorm(m1; p)[:subj])
+    sn = DataFrame(shrinkagenorm(m1; p)[grp])
     sts = DataFrame(st[grp])
-    sts = transform(sts, Not(:subj) => ByRow((x...) -> norm(x, p)) => :shrinkage)
+    cols = names(sts, !in(["subj", "item"]))
+    sts = transform(sts,
+                    cols => ByRow((x...) -> norm(x, p)) => :shrinkage)
     @test all(isapprox.(sts.shrinkage, sn.shrinkage; atol=0.005))
 end
