@@ -19,4 +19,7 @@ export termnames, gvif, vif
 include("remef.jl")
 export partial_fitted
 
+include("shrinkage.jl")
+export shrinkagenorm, shrinkagetables
+
 end
