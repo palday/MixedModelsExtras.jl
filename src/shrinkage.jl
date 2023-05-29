@@ -3,7 +3,7 @@
 
 Compute the conditional modes at θref.
 
-!!! warn
+!!! warning
     This function is **not** thread safe because it temporarily mutates
     the passed model before restoring its original form.
 """
@@ -49,7 +49,7 @@ to BLUPs from the mixed model.
 
 Each entry in the named tuple corresponds to a single grouping term.
 
-!!! warn
+!!! warning
     This function is **not** thread safe because it temporarily mutates
     the passed model before restoring its original form.
 """
@@ -76,7 +76,7 @@ to BLUPs from the mixed model.
 
 Each entry in the named tuple corresponds to a single grouping term.
 
-!!! warn
+!!! warning
     This function is **not** thread safe because it temporarily mutates
     the passed model before restoring its original form.
 """
