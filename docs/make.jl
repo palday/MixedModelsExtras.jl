@@ -4,6 +4,6 @@ using MixedModelsExtras
 makedocs(; root=joinpath(dirname(pathof(MixedModelsExtras)), "..", "docs"),
          sitename="MixedModelsExtras",
          doctest=true,
-         pages=["index.md"])
+         pages=["index.md", "api.md"])
 
 deploydocs(; repo="github.com/palday/MixedModelsExtras.jl.git", push_preview=true)
