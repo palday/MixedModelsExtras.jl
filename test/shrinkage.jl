@@ -48,7 +48,8 @@ end
     @testset "_ranef error path" begin
         grouseticks = DataFrame(dataset(:grouseticks))
         model = fit(MixedModel,
-                    @formula(ticks ~ 1 + year + height + (1 | index) + (1 | brood) + (1 | location)),
+                    @formula(ticks ~ 1 + year + height + (1 | index) + (1 | brood) +
+                                     (1 | location)),
                     grouseticks, Poisson(); fast=true, progress)
         @test_throws ArgumentError _ranef(model, NaN .* model.optsum.initial)
     end
