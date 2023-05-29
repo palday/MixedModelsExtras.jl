@@ -1,4 +1,5 @@
 using Aqua
+using LinearAlgebra
 using MixedModelsExtras
 using Test
 
@@ -21,4 +22,8 @@ end
 
 @testset "remef" begin
     include("remef.jl")
+end
+
+@testset "shrinkage" begin
+    include("shrinkage.jl")
 end
