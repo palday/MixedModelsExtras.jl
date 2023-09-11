@@ -2,10 +2,13 @@ module MixedModelsExtras
 
 using LinearAlgebra
 using MixedModels
+using Random
 using Statistics
 using StatsBase
 using StatsModels
 using Tables
+
+using MixedModels: replicate
 
 include("icc.jl")
 export icc
@@ -21,5 +24,8 @@ export partial_fitted
 
 include("shrinkage.jl")
 export shrinkagenorm, shrinkagetables
+
+include("bootstrap.jl")
+export bootstrap_lrtest
 
 end
