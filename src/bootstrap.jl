@@ -1,6 +1,9 @@
 
-function bootstrap_lrtest(rng::AbstractRNG, n::Integer, m0::MixedModel, m1::MixedModel; optsum_overrides=(;), progress=true)
-    models = [m0, m1]
+function bootstrap_lrtest(rng::AbstractRNG, n::Integer, m0::MixedModel, ms::MixedModel...; optsum_overrides=(;), progress=true)
+    m0 = deepcopy(m0)
+    ms = [deepcopy(m) for m in ms]
+    
+    models = [m0; ms...]
     dofs = dof.(models)
     formulas = string.(formula.(models))
     ord = sortperm(dofs)
@@ -10,21 +13,25 @@ function bootstrap_lrtest(rng::AbstractRNG, n::Integer, m0::MixedModel, m1::Mixe
     dofdiffs = diff(dofs)
     devdiffs = .-(diff(devs))
   
-    m0 = deepcopy(m0)
-    m1 = deepcopy(m1)
     for (key, val) in pairs(optsum_overrides)
         setfield!(m0.optsum, key, val)
-        setfield!(m1.optsum, key, val)
+        for m in ms
+            setfield!(m.optsum, key, val)
+        end
     end
     nulldist = replicate(n; hide_progress=!progress) do
         simulate!(rng, m0)
         refit!(m0; progress=false)
-        refit!(m1, response(m0))
-        return deviance(m1) - deviance(m0)
+        for m in ms
+            refit!(m, response(m0); progress=false)
+        end
+        return [deviance(m) for m in models]
     end
-    pvals = map(devdiffs) do dev
+    nulldist = stack(nulldist; dims=1)
+    nulldist = -1 .* diff(nulldist; dims=2)
+    pvals = map(enumerate(devdiffs)) do (idx, dev)
         if dev > 0
-            mean(>(dev), nulldist)
+            mean(>=(dev), view(nulldist, :, idx))
         else
             NaN
         end
