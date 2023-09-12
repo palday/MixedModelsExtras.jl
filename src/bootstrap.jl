@@ -24,7 +24,7 @@ original models is compared against this null distribution.
 
 This functionality may be deprecated in the future in favor of `StatsModels.lrtest`.
 """
-function bootstrap_lrtest(rng::AbstractRNG, n::Integer, m0::MixedModel, ms::MixedModel...; 
+function bootstrap_lrtest(rng::AbstractRNG, n::Integer, m0::MixedModel, ms::MixedModel...;
                           optsum_overrides=(;), progress=true)
     y0 = response(m0)
     ys = [response(m) for m in ms]
@@ -38,7 +38,7 @@ function bootstrap_lrtest(rng::AbstractRNG, n::Integer, m0::MixedModel, ms::Mixe
         devs = deviance.(models)[ord]
         dofdiffs = diff(dofs)
         devdiffs = .-(diff(devs))
-      
+
         for (key, val) in pairs(optsum_overrides)
             setfield!(m0.optsum, key, val)
             for m in ms
@@ -62,8 +62,8 @@ function bootstrap_lrtest(rng::AbstractRNG, n::Integer, m0::MixedModel, ms::Mixe
                 NaN
             end
         end
-    # catch ex
-    #     rethrow(ex)
+        # catch ex
+        #     rethrow(ex)
     finally
         # restore the original fits
         if progress
@@ -76,6 +76,7 @@ function bootstrap_lrtest(rng::AbstractRNG, n::Integer, m0::MixedModel, ms::Mixe
     end
     return MixedModels.LikelihoodRatioTest(formulas,
                                            (dof=dofs, deviance=devs),
-                                           (dofdiff=dofdiffs, deviancediff=devdiffs, pvalues=pvals),
+                                           (dofdiff=dofdiffs, deviancediff=devdiffs,
+                                            pvalues=pvals),
                                            first(models) isa LinearMixedModel)
 end
