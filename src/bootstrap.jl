@@ -1,7 +1,11 @@
-
-function bootstrap_lrtest(rng::AbstractRNG, n::Integer, m0::MixedModel, ms::MixedModel...; optsum_overrides=(;), progress=true)
-    m0 = deepcopy(m0)
-    ms = [deepcopy(m) for m in ms]
+"""
+    bootstrap_lrtest(rng::AbstractRNG, n::Integer, m0::MixedModel, ms::MixedModel...;
+                     optsum_overrides=(;), progress=true)
+"""
+function bootstrap_lrtest(rng::AbstractRNG, n::Integer, m0::MixedModel, ms::MixedModel...; 
+                          optsum_overrides=(;), progress=true)
+    y0 = response(m0)
+    ys = [response(m) for m in ms]
     
     models = [m0; ms...]
     dofs = dof.(models)
@@ -35,6 +39,15 @@ function bootstrap_lrtest(rng::AbstractRNG, n::Integer, m0::MixedModel, ms::Mixe
         else
             NaN
         end
+    end
+
+    # restore the original fits
+    if progress
+        @info "Bootstrapping complete, cleaning up..."
+    end
+    refit!(m0, y0; progress=false)
+    for (m, y) in zip(ms, ys)
+        refit!(m, y; progress=false)
     end
 
     return MixedModels.LikelihoodRatioTest(formulas,
