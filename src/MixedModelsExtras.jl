@@ -26,6 +26,6 @@ include("shrinkage.jl")
 export shrinkagenorm, shrinkagetables
 
 include("bootstrap.jl")
-export bootstrap_lrtest
+export bootstrap_lrt
 
 end

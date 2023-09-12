@@ -1,6 +1,6 @@
 """
-    bootstrap_lrtest(rng::AbstractRNG, n::Integer, m0::MixedModel, ms::MixedModel...;
-                     optsum_overrides=(;), progress=true)
+    bootstrap_lrt(rng::AbstractRNG, n::Integer, m0::MixedModel, ms::MixedModel...;
+                  optsum_overrides=(;), progress=true)
 
 Bootstrapped likelihood ratio test applied to a set of nested models.
 
@@ -24,10 +24,18 @@ original models is compared against this null distribution.
 
 This functionality may be deprecated in the future in favor of `StatsModels.lrtest`.
 """
-function bootstrap_lrtest(rng::AbstractRNG, n::Integer, m0::MixedModel, ms::MixedModel...;
+function bootstrap_lrt(rng::AbstractRNG, n::Integer, m0::MixedModel, ms::MixedModel...;
                           optsum_overrides=(;), progress=true)
     y0 = response(m0)
     ys = [response(m) for m in ms]
+    local models
+    local devs
+    local dofs
+    local dofs
+    local formulas
+    local dofdiffs
+    local devdiffs
+    local pvals
     try
         models = [m0; ms...]
         dofs = dof.(models)
@@ -54,7 +62,7 @@ function bootstrap_lrtest(rng::AbstractRNG, n::Integer, m0::MixedModel, ms::Mixe
             return [deviance(m) for m in models]
         end
         nulldist = stack(nulldist; dims=1)
-        nulldist = -1 .* diff(nulldist; dims=2)
+        nulldist = diff(nulldist; dims=2)
         pvals = map(enumerate(devdiffs)) do (idx, dev)
             if dev > 0
                 mean(>=(dev), view(nulldist, :, idx))
@@ -62,8 +70,8 @@ function bootstrap_lrtest(rng::AbstractRNG, n::Integer, m0::MixedModel, ms::Mixe
                 NaN
             end
         end
-        # catch ex
-        #     rethrow(ex)
+    catch ex
+        rethrow(ex)
     finally
         # restore the original fits
         if progress
