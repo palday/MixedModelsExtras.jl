@@ -26,8 +26,8 @@ This functionality may be deprecated in the future in favor of `StatsModels.lrte
 """
 function bootstrap_lrt(rng::AbstractRNG, n::Integer, m0::MixedModel, ms::MixedModel...;
                           optsum_overrides=(;), progress=true)
-    y0 = response(m0)
-    ys = [response(m) for m in ms]
+    y0 = copy(response(m0))
+    ys = [copy(response(m)) for m in ms]
     local models
     local devs
     local dofs
