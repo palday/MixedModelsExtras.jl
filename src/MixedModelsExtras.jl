@@ -10,7 +10,7 @@ using Tables
 using StatsModels: termnames, vif, gvif
 export termnames, gvif, vif
 
-StatsModels.termnames(::RandomEffectsTerm) = String[] 
+StatsModels.termnames(::RandomEffectsTerm) = String[]
 
 include("icc.jl")
 export icc
