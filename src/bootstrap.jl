@@ -25,7 +25,7 @@ original models is compared against this null distribution.
 This functionality may be deprecated in the future in favor of `StatsModels.lrtest`.
 """
 function bootstrap_lrt(rng::AbstractRNG, n::Integer, m0::MixedModel, ms::MixedModel...;
-                          optsum_overrides=(;), progress=true)
+                       optsum_overrides=(;), progress=true)
     y0 = copy(response(m0))
     ys = [copy(response(m)) for m in ms]
     local models

@@ -7,9 +7,9 @@ using MixedModels: likelihoodratiotest
 
 progress = false
 sleepstudy = MixedModels.dataset(:sleepstudy)
-fm0 = fit(MixedModel, @formula(reaction ~ 1 + days + (1 | subj)), 
+fm0 = fit(MixedModel, @formula(reaction ~ 1 + days + (1 | subj)),
           sleepstudy; progress)
-fm1 = fit(MixedModel, @formula(reaction ~ 1 + days + (1 + days | subj)), 
+fm1 = fit(MixedModel, @formula(reaction ~ 1 + days + (1 + days | subj)),
           sleepstudy; progress)
 fmzc = fit(MixedModel, @formula(reaction ~ 1 + days + zerocorr(1 + days | subj)),
            sleepstudy; progress)
