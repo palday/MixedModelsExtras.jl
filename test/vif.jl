@@ -18,7 +18,7 @@ progress = false
     fm2 = fit(MixedModel, @formula(reaction ~ 1 + days * days^2 + (1 | subj)),
               dataset(:sleepstudy); progress)
 
-    ae_int = ArgumentError("VIF only defined for models with an intercept term")
+    ae_int = ArgumentError("VIF is only defined for models with an intercept term")
     ae_nterm = ArgumentError("VIF not meaningful for models with only one non-intercept term")
     @test_throws ae_int vif(fm0)
     @test_throws ae_nterm vif(fm1)
@@ -46,7 +46,7 @@ end
     duncan = rdataset("car", "Duncan")
 
     lm1 = lm(@formula(Prestige ~ 1 + Income + Education), duncan)
-    @test termnames(lm1) == coefnames(lm1)
+    @test termnames(lm1)[2] == coefnames(lm1)
     vif_lm1 = vif(lm1)
 
     # values here taken from car
@@ -54,7 +54,7 @@ end
     @test isapprox(vif_lm1, gvif(lm1))
 
     lm2 = lm(@formula(Prestige ~ 1 + Income + Education + Type), duncan)
-    @test termnames(lm2) == ["(Intercept)", "Income", "Education", "Type"]
+    @test termnames(lm2)[2] == ["(Intercept)", "Income", "Education", "Type"]
     @test isapprox(gvif(lm2), [2.209178, 5.297584, 5.098592]; atol=1e-5)
     @test isapprox(gvif(lm2; scale=true),
                    [1.486330, 2.301648, 1.502666]; atol=1e-5)

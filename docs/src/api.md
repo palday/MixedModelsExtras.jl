@@ -38,3 +38,19 @@ termnames
 ```@docs
 gvif
 ```
+
+## "Partial" Effects
+
+```@docs
+partial_fitted
+```
+
+## Shrinkage Metrics
+
+```@docs
+shrinkagenorm
+```
+
+```@docs
+shrinkagetables
+```
