@@ -13,6 +13,7 @@ Tables = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
 
 [compat]
 MixedModels = "4"
+Statistics = "1"
 StatsBase = "0.33, 0.34"
 StatsModels = "0.7.3"
 Tables = "1"
