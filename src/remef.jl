@@ -23,7 +23,7 @@ The default is to match the specified fixed effects for all grouping variables,
 but note that this will fail when the fixed effects specification is incompatible
 with any grouping variable.
 
-The keyword arugment `mode` specifies whether the fixed and random effects
+The keyword argument `mode` specifies whether the fixed and random effects
 specifications are treated as coefficients to `:include` or `:exclude`.
 
 !!! note
