@@ -1,11 +1,15 @@
 using Aqua
 using LinearAlgebra
+using MixedModels
 using MixedModelsExtras
 using Test
 
 @testset "Aqua" begin
     # it's not piracy for StatsAPI.r2(::MixedModel), it's privateering!
-    Aqua.test_all(MixedModelsExtras; ambiguities=false, piracy=false)
+    Aqua.test_all(MixedModelsExtras; ambiguities=false,
+                  piracies=(;
+                            treat_as_own=[LinearMixedModel, MixedModel,
+                                          GeneralizedLinearMixedModel, RandomEffectsTerm]))
 end
 
 @testset "ICC" begin
