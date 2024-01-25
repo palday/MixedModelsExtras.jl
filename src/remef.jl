@@ -66,8 +66,8 @@ function _partial_fitted(model::MixedModel{T},
     mode == :exclude && (fe_idx = .!fe_idx)
     # @debug fe_idx
     # XXX does this work properly for rank-deficient models?
-    X = view(model.X, :, fe_idx)
-    vv = mul!(Vector{T}(undef, nobs(model)), X, fixef(model)[fe_idx])
+    X = view(modelmatrix(model), :, fe_idx)
+    vv = mul!(Vector{T}(undef, nobs(model)), X, view(fixef(model), fe_idx))
 
     for (rt, bb) in zip(model.reterms, ranef(model))
         group = Symbol(string(rt.trm))
@@ -91,10 +91,12 @@ function _partial_fitted(model::MixedModel{T},
         # @debug re_idx_reps
         # XXX no appropriate mul! method
         # mul!(vv, view(rt, :, re_idx_reps), view(bb, re_idx, :), one(T), one(T))
+        mul!(vv, view(rt, :, re_idx_reps), vec(view(bb, re_idx, :)), one(T), one(T))
+       
         # should re-write this as a loop to avoid allocating the intermediate allocation
         # @debug size(view(rt, :, re_idx_reps))
         # @debug size(view(bb, re_idx, :))
-        vv .+= view(rt, :, re_idx_reps) * vec(view(bb, re_idx, :))
+        # vv .+= view(rt, :, re_idx_reps) * vec(view(bb, re_idx, :))
     end
 
     return vv
