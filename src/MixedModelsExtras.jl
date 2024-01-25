@@ -8,6 +8,7 @@ using StatsBase
 using StatsModels
 using Tables
 
+using GLM: linkinv, Link
 using MixedModels: replicate
 using StatsModels: termnames, vif, gvif
 export termnames, gvif, vif
