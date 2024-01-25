@@ -1,10 +1,11 @@
 
 # Intercept always has to be specified
 """
-    partial_fitted(model::LinearMixedModel,
+    partial_fitted(model::MixedModel,
                    fe::AbstractVector{<:AbstractString},
                    re::Dict{Symbol}=Dict(fn => fe for fn in fnames(model));
-                   mode=:include)
+                   mode=:include,
+                   type=:response)
 
 Compute "partial" fitted values.
 
@@ -26,6 +27,20 @@ with any grouping variable.
 The keyword argument `mode` specifies whether the fixed and random effects
 specifications are treated as coefficients to `:include` or `:exclude`.
 
+For `GeneralizedLinearMixedModel`, the keyword argument `type` specifies whether
+the predictions should be returned on the scale of linear predictor (`:linpred`)
+or on the response scale (`:response`).
+
+!!! warn
+    Partial fitted values can be misleading for generalized linear mixed models
+    on the response scale because of the nonlinear nature of the link function.
+    For example, in logistic regression the partial fitted values are computed
+    on the linear predictor scale, i.e. the log odds scale, and then transformed
+    to the response scale, i.e. the probablitiy scale. However, a simple additive
+    contribution on the log odds scale is not additive on the probability scale.
+    More directly, it is impossible to decompose the effects of individual predictors
+    into simple additive contributions on the original scale.
+
 !!! note
     For both the fixed and the random effects, the relevant entities are the
     coefficient names, not the original term names.
@@ -44,10 +59,19 @@ function partial_fitted(model::LinearMixedModel{T},
                         fe::AbstractVector{<:AbstractString},
                         re::Dict{Symbol}=Dict(fn => fe for fn in fnames(model));
                         mode=:include) where {T}
-    return _partial_fitted(model, fe, re; mode)                        
+    return _partial_fitted(model, fe, re; mode)
 end
 
-function _partial_fitted(model::MixedModel{T}, 
+function partial_fitted(model::GeneralizedLinearMixedModel{T},
+                        fe::AbstractVector{<:AbstractString},
+                        re::Dict{Symbol}=Dict(fn => fe for fn in fnames(model));
+                        mode=:include, type=:linpred) where {T}
+    type in (:linpred, :response) || throw(ArgumentError("Invalid value for type: $(type)"))
+    y = _partial_fitted(model, fe, re; mode)
+    return type == :linpred ? y : broadcast!(Base.Fix1(linkinv, Link(model)), y, y)
+end
+
+function _partial_fitted(model::MixedModel{T},
                         fe::AbstractVector{<:AbstractString},
                         re::Dict{Symbol}; mode) where {T}
     # @debug fe
@@ -92,7 +116,7 @@ function _partial_fitted(model::MixedModel{T},
         # XXX no appropriate mul! method
         # mul!(vv, view(rt, :, re_idx_reps), view(bb, re_idx, :), one(T), one(T))
         mul!(vv, view(rt, :, re_idx_reps), vec(view(bb, re_idx, :)), one(T), one(T))
-       
+
         # should re-write this as a loop to avoid allocating the intermediate allocation
         # @debug size(view(rt, :, re_idx_reps))
         # @debug size(view(bb, re_idx, :))
