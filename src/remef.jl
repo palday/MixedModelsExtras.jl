@@ -31,7 +31,7 @@ For `GeneralizedLinearMixedModel`, the keyword argument `type` specifies whether
 the predictions should be returned on the scale of linear predictor (`:linpred`)
 or on the response scale (`:response`).
 
-!!! warn
+!!! warning
     Partial fitted values can be misleading for generalized linear mixed models
     on the response scale because of the nonlinear nature of the link function.
     For example, in logistic regression the partial fitted values are computed
