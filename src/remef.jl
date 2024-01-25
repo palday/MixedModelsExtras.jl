@@ -44,6 +44,12 @@ function partial_fitted(model::LinearMixedModel{T},
                         fe::AbstractVector{<:AbstractString},
                         re::Dict{Symbol}=Dict(fn => fe for fn in fnames(model));
                         mode=:include) where {T}
+    return _partial_fitted(model, fe, re; mode)                        
+end
+
+function _partial_fitted(model::MixedModel{T}, 
+                        fe::AbstractVector{<:AbstractString},
+                        re::Dict{Symbol}; mode) where {T}
     # @debug fe
     # @debug re
     issubset(fe, coefnames(model)) ||
