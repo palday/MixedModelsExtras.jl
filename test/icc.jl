@@ -22,7 +22,7 @@ progress = false
     @test icc(model, :subj) + icc(model, :item) ≈ icc(model)
 
     @testset "bootstrap" begin
-        boot = parametricbootstrap(StableRNG(42), 100, model; hide_progress=!progress)
+        boot = parametricbootstrap(StableRNG(42), 100, model; progress)
         iccboot_subj = icc(boot, :subj)
         iccboot_item = icc(boot, :item)
         @test iccboot_subj + iccboot_item ≈ icc(boot)
@@ -53,7 +53,7 @@ end
     @test icc(modelbern, Symbol("urban & dist")) ≈ icc(modelbin, Symbol("urban & dist"))
 
     @testset "bootstrap" begin
-        boot = parametricbootstrap(StableRNG(42), 100, modelbern; hide_progress=!progress)
+        boot = parametricbootstrap(StableRNG(42), 100, modelbern; progress)
         @test_throws ArgumentError icc(boot)
         iccboot = icc(boot, Bernoulli())
         ci = shortestcovint(iccboot)
