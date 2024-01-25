@@ -1,7 +1,7 @@
 name = "MixedModelsExtras"
 uuid = "781a26e1-49f4-409a-8f4c-c3159d78c17e"
 authors = ["Phillip Alday <me@phillipalday.com> and contributors"]
-version = "2.1.0"
+version = "2.1.1"
 
 [deps]
 GLM = "38e38edf-8417-5370-95a0-9cbb8c7f171a"
