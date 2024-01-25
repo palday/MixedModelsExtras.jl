@@ -7,8 +7,9 @@ using Test
 @testset "Aqua" begin
     # it's not piracy for StatsAPI.r2(::MixedModel), it's privateering!
     Aqua.test_all(MixedModelsExtras; ambiguities=false,
-                  piracies=(; treat_as_own=[LinearMixedModel, MixedModel,
-                                            GeneralizedLinearMixedModel, RandomEffectsTerm]))
+                  piracies=(;
+                            treat_as_own=[LinearMixedModel, MixedModel,
+                                          GeneralizedLinearMixedModel, RandomEffectsTerm]))
 end
 
 @testset "ICC" begin
