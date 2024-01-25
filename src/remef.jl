@@ -5,7 +5,7 @@
                    fe::AbstractVector{<:AbstractString},
                    re::Dict{Symbol}=Dict(fn => fe for fn in fnames(model));
                    mode=:include,
-                   type=:response)
+                   type=:linpred)
 
 Compute "partial" fitted values.
 
