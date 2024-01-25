@@ -72,8 +72,8 @@ function partial_fitted(model::GeneralizedLinearMixedModel{T},
 end
 
 function _partial_fitted(model::MixedModel{T},
-                        fe::AbstractVector{<:AbstractString},
-                        re::Dict{Symbol}; mode) where {T}
+                         fe::AbstractVector{<:AbstractString},
+                         re::Dict{Symbol}; mode) where {T}
     # @debug fe
     # @debug re
     issubset(fe, coefnames(model)) ||
