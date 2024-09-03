@@ -20,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        version: [1.8, 1]
+        version: [min, 1]
         arch: [x64]
         os: [ubuntu-20.04] # macos-10.15, windows-2019
     steps:
