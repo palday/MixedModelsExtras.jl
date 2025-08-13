@@ -22,10 +22,10 @@ jobs:
       matrix:
         version: [min, 1]
         arch: [x64]
-        os: [ubuntu-20.04] # macos-10.15, windows-2019
+        os: [ubuntu-24.04] # macos-10.15, windows-2019
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Julia Setup
         uses: julia-actions/setup-julia@v2
         with:
