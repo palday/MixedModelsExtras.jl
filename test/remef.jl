@@ -1,11 +1,3 @@
-using GLM: linkinv, Link
-using MixedModels
-using MixedModels: dataset
-using MixedModelsExtras
-using Test
-
-progress = false
-
 @testset "LMM" begin
     fm1 = fit(MixedModel,
               @formula(reaction ~ 1 + days + (1 + days | subj)),

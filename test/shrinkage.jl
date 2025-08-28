@@ -1,13 +1,3 @@
-using DataFrames
-using LinearAlgebra
-using MixedModels
-using MixedModelsExtras
-using Test
-
-using MixedModels: dataset
-using MixedModelsExtras: _ranef
-progress = false
-
 @testset "LMM" begin
     m1 = fit(MixedModel,
              @formula(rt_trunc ~ 1 + spkr * prec * load +
