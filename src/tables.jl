@@ -37,5 +37,4 @@ function ictab(models::StatisticalModel...; label=string.(formula.(models)))
             ΔAIC, 
             ΔAICc, 
             ΔBIC)
-
 end
