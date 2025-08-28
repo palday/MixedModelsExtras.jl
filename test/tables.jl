@@ -1,14 +1,14 @@
 ssfit(f) = fit(MixedModel, f, dataset(:sleepstudy); progress)
 
-a = ssfit(@formula(reaction ~ 1 + days + (1|subj)))
-b = ssfit(@formula(reaction ~ 1 + days + (1 + days|subj)))
-c = ssfit(@formula(reaction ~ 1 + (1|subj)))
-d = ssfit(@formula(reaction ~ 1 + (1 + days|subj)))
+a = ssfit(@formula(reaction ~ 1 + days + (1 | subj)))
+b = ssfit(@formula(reaction ~ 1 + days + (1 + days | subj)))
+c = ssfit(@formula(reaction ~ 1 + (1 | subj)))
+d = ssfit(@formula(reaction ~ 1 + (1 + days | subj)))
 
 tbl = aictab(a, b, c, d)
 
 @test issubset([:formula, :DoF, :ΔAIC, :ΔAICc, :ΔBIC],
-                Tables.columnnames(tbl))
+               Tables.columnnames(tbl))
 
 @test Tables.rowcount(tbl) == 4
 
