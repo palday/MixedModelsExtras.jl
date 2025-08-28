@@ -8,6 +8,7 @@ using MixedModelsExtras
 using StableRNGs
 using Statistics
 using StatsBase
+using Tables
 using Test
 
 using GLM: linkinv, Link
