@@ -30,11 +30,11 @@ function ictab(models::StatisticalModel...; label=string.(formula.(models)))
     ΔAIC = aics .- minimum(aics)
     ΔAICc = aiccs .- minimum(aiccs)
     ΔBIC = bics .- minimum(bics)
-    
-    return (; model=string.(collect(label)), 
-            DoF, 
-            Symbol("-2 loglikelihood") => -2 * loglik, 
-            ΔAIC, 
-            ΔAICc, 
+
+    return (; model=string.(collect(label)),
+            DoF,
+            Symbol("-2 loglikelihood") => -2 * loglik,
+            ΔAIC,
+            ΔAICc,
             ΔBIC)
 end
