@@ -26,6 +26,6 @@ include("shrinkage.jl")
 export shrinkagenorm, shrinkagetables
 
 include("tables.jl")
-export aictab
+export ictab
 
 end

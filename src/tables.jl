@@ -1,10 +1,10 @@
 """
-    aictab(models::StatisticalModel...)
+    ictab(models::StatisticalModel...; label=string.(formula.(models)))
 
-Generate a table of moe3l formulae and information criteria.
+Generate a table of model formulae and information criteria.
 
 Required columns:
-- `formula`: String representation of model formulae
+- `model`: String representation of model, specified by the `label` kwarg.
 - `DoF`: model degrees of freedom 
 - `ΔAIC`: change in AIC from model with the lowest AIC value
 - `ΔAICc`: change in AICc from model with the lowest BIC value 
@@ -19,7 +19,7 @@ Note that the minimum for the various information criteria may occur at differen
 
 The API guarantee is for a Tables.jl-compatible table, not for a specific return type.
 """
-function aictab(models::StatisticalModel...)
+function ictab(models::StatisticalModel...; label=string.(formula.(models)))
     models = collect(models)
     aics = aic.(models)
     aiccs = aicc.(models)
@@ -31,7 +31,7 @@ function aictab(models::StatisticalModel...)
     ΔAICc = aiccs .- minimum(aiccs)
     ΔBIC = bics .- minimum(bics)
     
-    return (; formula=string.(formula.(models)), 
+    return (; model=string.(collect(label)), 
             DoF, 
             Symbol("-2 loglikelihood") => -2 * loglik, 
             ΔAIC, 
