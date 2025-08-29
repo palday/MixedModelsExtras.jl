@@ -1,5 +1,5 @@
 """
-    ictab(models::StatisticalModel...; label=string.(formula.(models)))
+    ictable(models::StatisticalModel...; label=string.(formula.(models)))
 
 Generate a table of model formulae and information criteria.
 
@@ -19,7 +19,7 @@ Note that the minimum for the various information criteria may occur at differen
 
 The API guarantee is for a Tables.jl-compatible table, not for a specific return type.
 """
-function ictab(models::StatisticalModel...; label=string.(formula.(models)))
+function ictable(models::StatisticalModel...; label=string.(formula.(models)))
     models = collect(models)
     aics = aic.(models)
     aiccs = aicc.(models)

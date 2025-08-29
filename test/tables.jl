@@ -5,7 +5,7 @@ b = ssfit(@formula(reaction ~ 1 + days + (1 + days | subj)))
 c = ssfit(@formula(reaction ~ 1 + (1 | subj)))
 d = ssfit(@formula(reaction ~ 1 + (1 + days | subj)))
 
-tbl = ictab(a, b, c, d)
+tbl = ictable(a, b, c, d)
 
 @test issubset([:model, :DoF, :ΔAIC, :ΔAICc, :ΔBIC],
                Tables.columnnames(tbl))
