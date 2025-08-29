@@ -1,14 +1,3 @@
-using DataFrames
-using Distributions
-using MixedModels
-using MixedModels: dataset
-using MixedModelsExtras
-using StableRNGs
-using Statistics
-using Test
-
-progress = false
-
 @testset "LMM" begin
     model = fit(MixedModel, @formula(reaction ~ 1 + (1 | subj)), dataset(:sleepstudy);
                 progress)

@@ -25,4 +25,7 @@ export partial_fitted
 include("shrinkage.jl")
 export shrinkagenorm, shrinkagetables
 
+include("tables.jl")
+export ictable
+
 end
